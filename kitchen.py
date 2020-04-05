@@ -56,20 +56,20 @@ def activateGPIO():
     pir = MotionSensor(4)
     print('PIR sensor using ' + str(pir.pin))
     switch_pin = 27
-    return(switch_pin)
+    return(switch_pin,pir)
 
 if __name__== "__main__":
     print('Starting up...')
-    switch_pin = activateGPIO()
+    switch_pin,pir = activateGPIO()
     while True:
         if(gpio.input(switch_pin) == 1):
             print("Switch ON!")
             print('Waiting for motion...')
             pir.wait_for_motion()
-                #if switch was disconnected while waiting for motion
-                if(gpio.input(switch_pin) == 1):
-			                 print('Motion Detected, logging the sucker!')
-                    myDeviceShadow.shadowUpdate('{"state":{"reported":{"motion":"detected"}}}',myShadowUpdateCallback,5)
+            #if switch was disconnected while waiting for motion
+            if(gpio.input(switch_pin) == 1):
+                print('////////////////////////Motion Detected, logging the sucker!')
+                myDeviceShadow.shadowUpdate('{"state":{"reported":{"motion":"detected"}}}',myShadowUpdateCallback,5)
         else:
             print('Switch off :(')
         print("Sleeping for 60 seconds")

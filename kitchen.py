@@ -8,7 +8,6 @@ import time
 import logging
 import json
 
-
 # A random programmatic shadow client ID.
 SHADOW_CLIENT = "myShadowClient"
 
@@ -59,19 +58,19 @@ def activateGPIO():
     switch_pin = 27
     return(switch_pin)
 
-def initializeIOT():
-    print('something')
-    
 if __name__== "__main__":
-    print('starting up...')
+    print('Starting up...')
     switch_pin = activateGPIO()
     while True:
         if(gpio.input(switch_pin) == 1):
-            print("switch, ON!")
-            #motiondetected
-            myDeviceShadow.shadowUpdate('{"state":{"reported":{"motion":"detected"}}}',myShadowUpdateCallback,5)
+            print("Switch ON!")
+            print('Waiting for motion...')
+            pir.wait_for_motion()
+                #if switch was disconnected while waiting for motion
+                if(gpio.input(switch_pin) == 1):
+			                 print('Motion Detected, logging the sucker!')
+                    myDeviceShadow.shadowUpdate('{"state":{"reported":{"motion":"detected"}}}',myShadowUpdateCallback,5)
         else:
-            print('switch off')
-        time.sleep(5)
-
-
+            print('Switch off :(')
+        print("Sleeping for 60 seconds")
+        time.sleep(60)

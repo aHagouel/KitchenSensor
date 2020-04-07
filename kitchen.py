@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from __future__ import absolute_import, print_function
-from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
+from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient, AWSIoTMQTTClient
 from gpiozero import MotionSensor
 import gpio
 from datetime import datetime
@@ -22,11 +22,11 @@ ROOT_CA = "root-CA.crt"
 # The relative path to your private key file that
 # &IoT; generated for this device, which you
 # have already saved onto this device.
-PRIVATE_KEY = "056e1e33f1-private.pem.key"
+PRIVATE_KEY = "374d6aef44-private.pem.key"
 # The relative path to your certificate file that 
 # &IoT; generated for this device, which you 
 # have already saved onto this device.
-CERT_FILE = "056e1e33f1-certificate.pem.crt"
+CERT_FILE = "374d6aef44-certificate.pem.crt"
 
 # A programmatic shadow handler name prefix.
 SHADOW_HANDLER = "Pi"
@@ -58,19 +58,29 @@ def activateGPIO():
     switch_pin = 27
     return(switch_pin)
 
+def customShadowCallback_Delta(payload, responseStatus, token):
+    payload = json.loads(payload)
+    print(payload)
+
 if __name__== "__main__":
     print('Starting up...')
-    switch_pin = activateGPIO()
     while True:
-        if(gpio.input(switch_pin) == 1):
-            print("Switch ON!")
-            print('Waiting for motion...')
-            pir.wait_for_motion()
-                #if switch was disconnected while waiting for motion
-                if(gpio.input(switch_pin) == 1):
-			                 print('Motion Detected, logging the sucker!')
-                    myDeviceShadow.shadowUpdate('{"state":{"reported":{"motion":"detected"}}}',myShadowUpdateCallback,5)
-        else:
-            print('Switch off :(')
-        print("Sleeping for 60 seconds")
-        time.sleep(60)
+        myDeviceShadow.shadowRegisterDeltaCallback(customShadowCallback_Delta)
+        playsound("airhorn-siren.mp3")
+        time.sleep(15)
+
+    #switch_pin = activateGPIO()
+    # while True:
+    #     if gpio.input(switch_pin) == 1:
+    #         print("Switch ON!")
+    #         print('Waiting for motion...')
+    #         pir.wait_for_motion()
+    #             #if switch was disconnected while waiting for motion
+    #             if(gpio.input(switch_pin) == 1):
+	# 		                 print('Motion Detected, logging the sucker!')
+    #                 myDeviceShadow.shadowUpdate('{"state":{"reported":{"motion":"detected"}}}',myShadowUpdateCallback,5)
+    #     else:
+    #         print('Switch off :(')
+    #     print("Sleeping for 60 seconds")
+    #     time.sleep(60)
+

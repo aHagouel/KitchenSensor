@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 from __future__ import absolute_import, print_function
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
+from playsound import playsound
 from gpiozero import MotionSensor
 import gpio
 from datetime import datetime
 import time
 import logging
 import json
+import os
 
 # A random programmatic shadow client ID.
 SHADOW_CLIENT = "myShadowClient"
@@ -66,11 +68,11 @@ if __name__== "__main__":
             print("Switch ON!")
             print('Waiting for motion...')
             pir.wait_for_motion()
+            print(pir.is_active)
             #if switch was disconnected while waiting for motion
             if(gpio.input(switch_pin) == 1):
                 print('////////////////////////Motion Detected, logging the sucker!')
+                os.system("omxplayer -o local airhorn-siren.mp3")
                 myDeviceShadow.shadowUpdate('{"state":{"reported":{"motion":"detected"}}}',myShadowUpdateCallback,5)
         else:
             print('Switch off :(')
-        print("Sleeping for 60 seconds")
-        time.sleep(60)

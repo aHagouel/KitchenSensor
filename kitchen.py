@@ -77,4 +77,4 @@ while True:
     else:
         print('Switch OFF :(')
 
-    time.sleep(15)
+    time.sleep(1)

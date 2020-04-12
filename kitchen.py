@@ -22,15 +22,6 @@ def update_state(payload, responseStatus, token):
     myDeviceShadow.shadowUpdate(newPayload, my_shadow_update_callback, 5)
 
 
-# Configure shadow client with localy stored creds, associate to thing
-SHADOW_CLIENT = "myShadowClient"
-HOST_NAME = "a1r58egst5kiuu-ats.iot.us-west-2.amazonaws.com"
-ROOT_CA = "root-CA.crt"
-PRIVATE_KEY = "056e1e33f1-private.pem.key"
-CERT_FILE = "056e1e33f1-certificate.pem.crt"
-SHADOW_HANDLER = "Pi"
-
-
 # Callback function for AWS IOT
 def my_shadow_update_callback(payload, responseStatus, token):
     print('Loading function')
@@ -40,7 +31,14 @@ def my_shadow_update_callback(payload, responseStatus, token):
     print("token = " + token)
 
 
-# Create, configure, and connect a shadow client.
+# Create, configure, and connect a shadow client with locally stored creds, associate to thing
+SHADOW_CLIENT = "myShadowClient"
+HOST_NAME = "a1r58egst5kiuu-ats.iot.us-west-2.amazonaws.com"
+ROOT_CA = "root-CA.crt"
+PRIVATE_KEY = "056e1e33f1-private.pem.key"
+CERT_FILE = "056e1e33f1-certificate.pem.crt"
+SHADOW_HANDLER = "Pi"
+
 print('Starting up AWS IOT shadow...')
 myShadowClient = AWSIoTMQTTShadowClient(SHADOW_CLIENT)
 myShadowClient.configureEndpoint(HOST_NAME, 8883)
@@ -48,6 +46,7 @@ myShadowClient.configureCredentials(ROOT_CA, PRIVATE_KEY, CERT_FILE)
 myShadowClient.configureConnectDisconnectTimeout(10)
 myShadowClient.configureMQTTOperationTimeout(5)
 myShadowClient.connect()
+
 # Create a programmatic representation of the shadow.
 myDeviceShadow = myShadowClient.createShadowHandlerWithName(SHADOW_HANDLER, True)
 print('Connected to AWS IOT with locally loaded shadow!')

@@ -86,7 +86,7 @@ while True:
         pir.wait_for_motion()
         # if switch was flipped while waiting for motion
         if state == "enabled":
-            os.system("omxplayer -o local maui-no.mp3")
+            os.system("omxplayer -o local /home/pi/Development/KitchenSensor/maui-no.mp3")
             myDeviceShadow.shadowUpdate('{"state":{"reported":{"motion":"detected"}}}', my_shadow_update_callback, 5)
     
     time.sleep(3)

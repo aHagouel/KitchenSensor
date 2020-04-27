@@ -8,20 +8,20 @@ import os
 import signal
 import sys
 
-print("id is: " + str(os.getpid()))
 
 # catch shutdowns and update AWS shadow that we're offline
 def handler(signum, frame):
-    print ('Signal handler called with signal', signum)
     #Update device state to offline
-    myDeviceShadow.shadowUpdate('{"state":{"reported":{"status":'+str(signum)+'"}}}', my_shadow_update_callback, 5)
+    myDeviceShadow.shadowUpdate('{"state":{"reported":{"status":"offline"}}}', my_shadow_update_callback, 5)
     sys.exit(0)
 
 
 # register terminate signals that may come in if program is asked to shut down
+# don't register the child process signal -- our program runs this :) 
 for sig in (signal.Signals):
     try:
-        signal.signal(sig, handler)
+        if(sig != 17):
+                signal.signal(sig, handler)
     except OSError:
         print('Skipping', sig)
         
@@ -83,12 +83,10 @@ myDeviceShadow.shadowRegisterDeltaCallback(update_state)
 while True:
     
     if state == "enabled":
-        print('waiting.....')
         pir.wait_for_motion()
         # if switch was flipped while waiting for motion
         if state == "enabled":
             os.system("omxplayer -o local maui-no.mp3")
-            print('MOTION!!!!!!')
             myDeviceShadow.shadowUpdate('{"state":{"reported":{"motion":"detected"}}}', my_shadow_update_callback, 5)
     
     time.sleep(3)

@@ -67,7 +67,7 @@ myShadowClient.connect()
 
 # Create a programmatic representation of the shadow & update state to online.
 myDeviceShadow = myShadowClient.createShadowHandlerWithName(SHADOW_HANDLER, True)
-myDeviceShadow.shadowUpdate('{"state":{"reported":{"status":"online"}}}', my_shadow_update_callback, 5)
+myDeviceShadow.shadowUpdate('{"state":{"reported":{"status":"online", "monitor":"enabled"}}}', my_shadow_update_callback, 5)
 
 # pickup motion sensor on RaspberryPi, give it 15 seconds to get used to the infrared :)
 pir = MotionSensor(4)
